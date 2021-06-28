@@ -66,12 +66,14 @@ class Blockchain {
         
         return new Promise(async (resolve, reject) => {
             let chainHeight = await this.getChainHeight();
-            if(chainHeight > 0){
+            if(chainHeight >= 0){
                 const prevBlock = await this.getBlockByHeight(this.height);
-                const previousBlockHash = prevBlock.hash();
+                const previousBlockHash = prevBlock.hash;
+                block.previousBlockHash = previousBlockHash;
             }
-                block.hash = SHA256(JSON.stringify(block)).toString();
-                block.timeStamp = new Date().getTime().toString().slice(0,-3);
+               block.hash = SHA256(JSON.stringify(block)).toString();
+               block.time = new Date().getTime().toString().slice(0,-3);
+        
                 let isValid = await this.validateChain();
                 if(isValid){
                     this.chain.push(block);
@@ -97,7 +99,7 @@ class Blockchain {
      
     requestMessageOwnershipVerification(address) {
         return new Promise((resolve) => {
-            resolve(`${address}:${this.Date().getTime().toString().slice(0,-3)}:starRegistry`)
+            resolve(`${address}:${new Date().getTime().toString().slice(0,-3)}:starRegistry`)
         });
     }
 
