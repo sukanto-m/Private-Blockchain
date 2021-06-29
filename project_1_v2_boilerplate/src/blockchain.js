@@ -79,11 +79,12 @@ class Blockchain {
                     this.chain.push(block);
                     block.height = chainHeight + 1;
                     this.height = block.height;
+                    resolve(block)
+                } else {
+                    reject('error')
                 }
 
-            resolve(block);
-            
-        });
+        })
            
         
     }
@@ -128,9 +129,9 @@ class Blockchain {
             if((currentTime - messageTime) <= 300){
                 const msgValid = bitcoinMessage.verify(message,address,signature);
                 if(msgValid){
-                    let newBlock = new BlockClass.Block({star: star, owner: address});
-                    let resBlock = await this._addBlock(newBlock);
-                    resolve(newBlock)
+                    let block = new BlockClass.Block({"star": star, "owner": address});
+                    await this._addBlock(block);
+                    resolve(block)
                 } 
             } else {
                 reject();
@@ -183,13 +184,9 @@ class Blockchain {
         let self = this;
         let stars = [];
         return new Promise((resolve, reject) => {
-            self.chain.forEach((b) => {
-                let data = b.getBData();
-                if(data){
-                    if (data.owner === address){
-                        stars.push(data);
-                    }
-                }
+            self.chain.forEach(async(b) => {
+                let data = await b.getBData();
+                if (data.owner === address) stars.push(data);
             });
             resolve(stars);
         });

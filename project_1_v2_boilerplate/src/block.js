@@ -54,14 +54,7 @@ class Block {
                     // Returning the Block is valid
                     resolve(false)
                 }
-            
-            
-            
-            
-            
-            
-            
-
+        
         });
     }
 
